@@ -1,0 +1,79 @@
+{% extends 'dashboard/base.html' %}
+
+
+{% block content %}
+<br>
+
+<div class="row" style="margin-left: 10px;">
+    <div class="col-lg-3">
+        <h3>Update Order Status</h3>
+    </div>
+
+</div>
+<br>
+
+<div class="col-lg-3">
+
+    <form method="POST">  
+    {% csrf_token %}
+        <select class="form-control" aria-label="Default select example" name="orderstatus">
+            <option selected>
+                <h3>{{order.get_status_display}}</h3>
+            </option>
+            {% for stat in status %}
+                <option value="{{stat.0}}">{{stat.1}}</option>
+            {% endfor %}
+        </select>
+        <hr>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+
+
+
+<br>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table mr-1"></i>
+        DataTable Example
+
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{item.product.name}}</td>
+                        <td>{{item.product.get_category_display}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.product.price}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}

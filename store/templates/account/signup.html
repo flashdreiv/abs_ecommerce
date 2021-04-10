@@ -1,0 +1,59 @@
+{% load i18n %}
+{% load static %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+<body>
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/login.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  
+  <body>
+    <main>
+      
+      <section class="signup_panel">
+        <form class="signup" id="signup_form" method="POST" action="{% url 'account_signup' %}">
+          <h1>{% trans "Sign Up" %}</h1>
+          {% csrf_token %}
+          <div class="md-form card-body">
+            {% render_field form.username|attr:"required" class="form-control" %}
+          </div>
+          <div class="md-form">
+            {% render_field form.email|attr:"required" class="form-control" %}
+          </div>
+          <div class="row">
+            <div class="col-lg-5">
+              <div class="md-form">
+                {% render_field form.password1|attr:"required" class="form-control" %}
+              </div>
+              <div class="md-form">
+                {% render_field form.password2|attr:"required" class="form-control" %}
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-success btn-xs btn-block" type="submit" id="checkoutBtn">Login</button>
+          <br>
+          <br>
+          Already have an account?<a href="{% url 'account_login' %}"type="submit" id="checkoutBtn"> Login</a>
+          <br>
+          <br>
+          {% for field in form  %}
+            {{field.errors}}
+          {% endfor %}
+            
+          
+          
+          
+        </form>
+      </section>
+    </main>   
+  </body>
+
+
+</body>
+
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'dashboard/base.html' %}
+
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <h2>Details</h2>
+    <br>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            DataTable Example 
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Date Ordered</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Date Ordered</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Edit</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{order.transaction_id}}</td>
+                            <td>{{order.date_ordered|date}}</td>
+                            <td>{{order.customer.name}}</td>
+                            <td>{{order.get_status_display}}</td>
+                            <td><a class="btn btn-primary" href="{% url 'update-order' order.pk %}">Update</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

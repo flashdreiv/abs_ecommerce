@@ -1,0 +1,127 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<link href="{% static 'css/track_order.css' %}" rel="stylesheet">
+
+<div class="container">
+    {% for order in orders %}
+    <article class="card" id="trackorder" >
+        <div class="card-body">
+            <h6>Order ID: {{order.transaction_id}}</h6>
+            <article class="card">
+                <div class="card-body row">
+                    <div class="col"> <strong>Estimated Delivery time:</strong> <br>29 nov 2019 </div>
+                    <div class="col"> <strong>Shipping BY:</strong> <br> BLUEDART, | <i class="fa fa-phone"></i>
+                        +1598675986 </div>
+                    <div class="col"> <strong>Status:</strong> <br> {{order.get_status_display}}</div>
+                    <div class="col"> <strong>Tracking #:</strong> <br>{{order.transaction_id}}</div>
+                </div>
+            </article>
+            <div class="track tracker" data-order="{{order.id}}" data-status="{{order.status}}">
+                <div class="step"> <span class="icon"> <i class="fa fa-check"></i> </span> <span
+                        class="text">Order confirmed</span> </div>
+                <div class="step"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">
+                        Picked by courier</span> </div>
+                <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> On the
+                        way </span> </div>
+                <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Delivered</span> </div>
+            </div>
+            <hr>
+            <ul class="row">
+                {% for item in order.orderitem_set.all %}
+                <li class="col-md-4">
+                    <figure class="itemside mb-3">
+                        <div class="aside"><img
+                                src="{{item.product.imgURL}}"
+                                class="img-sm border"></div>
+                        <figcaption class="info align-self-center">
+                            <p class="title">{{item.product.name}}<br>{{item.product.price}}</p> <span class="text-muted">{{item.product.get_category_display}}
+                            </span>
+                        </figcaption>
+                    </figure>
+                </li>
+                {% endfor %}   
+            </ul>
+            <hr>
+            <a href="{% url 'store' %}" class="btn btn-primary" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+        </div>
+    </article>
+    {% endfor %}
+    <br>
+    <!--Pagination-->
+    <nav class="d-flex justify-content-center wow fadeIn">
+        <ul class="pagination pg-blue">
+
+          <!--Arrow left-->
+          
+          {% if orders.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="{% url 'track-order'%}?page={{orders.previous_page_number}}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+          {% endif %}
+          
+
+          
+          {% for i in pages.paginator.page_range %}
+          {% if pages.number == i %}
+          <li class="page-item active">
+            <a class="page-link" href="?page={{i}}">{{i}}
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{i}}">{{i}}
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          {% endif %}
+          {% endfor %}
+          {% if orders.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="{% url 'track-order'%}?page={{orders.next_page_number}}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          {% endif %}
+            
+        </ul>
+      </nav>
+      <!--Pagination-->
+     
+</div>
+<script>
+    // Check order status
+    var orders = document.getElementsByClassName("tracker")
+    var status,track_step,count;
+    
+    for(let i=0;i<orders.length;i++){
+        order_id = orders[i].dataset.order
+        status = orders[i].dataset.status
+        if(status=='5'){
+          count = 0
+        }else {
+          count = parseInt(status)
+        }
+
+
+        track_step = orders[i].getElementsByClassName('step')
+        
+        for(let x=0;x<count;x++){
+            track_step[x].classList.add("active")
+        }   
+
+       
+    }
+    
+    
+</script>
+
+{% endblock content %}

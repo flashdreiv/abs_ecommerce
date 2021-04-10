@@ -1,0 +1,134 @@
+{% extends 'store/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<body class="grey lighten-3">
+  <main class="mt-4 pt-4">
+    <div class="container wow fadeIn">
+
+      <h2 class="my-5 h2 text-center">Delivery form</h2>
+
+      <div class="row">
+
+
+        <div class="col-md-8 mb-4">
+
+
+          <div class="card">
+
+
+            <form class="card-body" id="checkoutForm" action="{% url 'process-order' %}" method="POST">
+              {% csrf_token %}
+              <div class="md-form">
+                {% render_field form.mobile_number|attr:"required" placeholder="Mobile Number" class="form-control" %}
+                <label for="mobile_number" class=""></label>
+              </div>
+              <div class="md-form">
+                {% render_field form.address|attr:"required" placeholder="Delivery address" class="form-control" %}
+                <label for="address" class=""></label>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <label for="country">Province</label>
+                  {% render_field form.province|attr:"required" class="custom-select d-block w-100"%}
+                  <div class="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                  <label for="state">City</label>
+                  {% render_field form.city|attr:"required" class="custom-select d-block w-100" %}
+                  <div class="invalid-feedback">
+                    Please provide a valid City.
+                  </div>
+
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <label for="zip">Zip</label>
+                  {% render_field form.zipcode|attr:"required" class="form-control" %}
+                  <div class="invalid-feedback">
+                    Zip code required.
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div id="paypal-button-container" style="display:none">
+              </div>
+              <hr class="mb-4">
+
+              <button class="btn btn-primary btn-lg btn-block" type="submit" id="checkoutBtn">Continue to
+                checkout</button>
+
+            </form>
+
+          </div>
+
+
+        </div>
+        <div class="col-md-4 mb-4">
+
+
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Your cart</span>
+            <span class="badge badge-secondary badge-pill">{{cartTotal}}</span>
+          </h4>
+
+
+          <ul class="list-group mb-3 z-depth-1">
+
+            {% for order in orders %}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">{{order.product.name}}</h6>
+                <small class="text-muted">{{order.product.get_category_display}}</small>
+              </div>
+              <span class="text-muted">₱{{order.product.price}}</span>
+            </li>
+            {% endfor %}
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total (PHP)</span>
+              <strong>₱{{total_amount}}</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+<script
+  src="https://www.paypal.com/sdk/js?client-id=AUIXLIIdCtDaVWvUDRh52NOzsvVSZbdn7y7OENGrD_ZrekRKGoXmnTBCR9d1k5Qrk-kQTs1AZ-qWM4u9&currency=PHP"></script>
+<script>
+
+
+
+  // Render the PayPal button into #paypal-button-container
+  var total = '{{total_amount}}'
+  paypal.Buttons({
+    // Set up the transaction
+    createOrder: function (data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: parseFloat(total).toFixed(2)
+          }
+        }]
+      });
+    },
+
+    // Finalize the transaction
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (details) {
+        // Show a success message to the buyer
+        document.getElementById("checkoutForm").submit();
+        alert('Transaction complete')
+
+      });
+    }
+
+  }).render('#paypal-button-container');
+</script>
+
+{% endblock content %}
