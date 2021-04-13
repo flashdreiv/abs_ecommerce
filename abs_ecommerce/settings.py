@@ -26,7 +26,7 @@ SECRET_KEY = 'oe=)4*p)_-1*o5#0i6pzk&le1o^18##_qve83nz^c6%7ktgk=j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'store',
     'dashboard',
+    'api',
+    'ph_locations',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -50,10 +52,13 @@ INSTALLED_APPS = [
    
 
 ]
+
 SITE_ID=1
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/sms_verification/new'
 ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_FORMS = {'signup': 'store.forms.CustomerSignupForm'}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

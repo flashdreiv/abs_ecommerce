@@ -16,6 +16,7 @@
     <!-- Your custom styles (optional) -->
     <link href="{% static 'css/style.min.css' %} " rel="stylesheet">
     <link href="{% static 'css/main.css' %} " rel="stylesheet">
+    {% include 'store/scripts.html' %}
     <script>
         function getCookie(name) {
             let cookieValue = null;
@@ -95,6 +96,6 @@
     </div>
 </body>
 
-{% include 'store/scripts.html' %}
+
 
 </html>

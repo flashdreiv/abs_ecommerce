@@ -12,3 +12,4 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(DeliveryInfo)
+admin.site.register(SmsCode)

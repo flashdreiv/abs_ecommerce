@@ -1,59 +1,155 @@
+{% extends 'store/base.html' %}
 {% load i18n %}
 {% load static %}
+
 
 {% load widget_tweaks %}
 
 {% block content %}
-<link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
 <body>
-  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
-  <link href="{% static 'css/login.css' %}" rel="stylesheet">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-  
-  <body>
-    <main>
-      
-      <section class="signup_panel">
-        <form class="signup" id="signup_form" method="POST" action="{% url 'account_signup' %}">
-          <h1>{% trans "Sign Up" %}</h1>
-          {% csrf_token %}
-          <div class="md-form card-body">
-            {% render_field form.username|attr:"required" class="form-control" %}
-          </div>
-          <div class="md-form">
-            {% render_field form.email|attr:"required" class="form-control" %}
-          </div>
-          <div class="row">
-            <div class="col-lg-5">
-              <div class="md-form">
-                {% render_field form.password1|attr:"required" class="form-control" %}
+
+  <main>
+    <div class="container mt-4">
+      <!--Grid row-->
+      <div class="row d-flex justify-content-center">
+        <!--Grid column-->
+        <div class="col-md-6">
+          <!--Section: Content-->
+          <section class="mt-4 mb-5">
+            <form id="signUpForm" method="POST" action="{% url 'account_signup' %}">
+              {% csrf_token %}
+              <div class="step-1">
+                <div class="container text-center py-5">
+                  <h3 class="mb-0">Sign up</h3>
+                </div>
+                {{form.errors}}
+                {{form.success}}
+                <div class="form-row">
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      {% render_field form.mobile_number class="form-control"%}
+                      <label for="id_mobile_number" class="">Mobile Number</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="md-form md-outline mt-0">
+                  {% render_field form.password1|attr:"placeholder" class="form-control"%}
+                  <label for="id_password1" class="">Your password</label>
+                </div>
+                <div class="md-form md-outline mt-0">
+                  {% render_field form.password2|attr:"placeholder" class="form-control"%}
+                  <label for="id_password2" class="">Confirm Password</label>
+                  <small id="materialRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+                    At least 8 characters and 1 digit
+                  </small>
+                </div>
+                <div class="col">
+                  <div class="md-form md-outline mt-0">
+                    <div class="text-center mb-2">
+                      <button type="button" id="nxtBtn"
+                        class="btn btn-primary mb-4 waves-effect waves-light">Next</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="md-form">
-                {% render_field form.password2|attr:"required" class="form-control" %}
+
+              <div class="step-2" style="display: none;">
+                <div class="container text-center py-5">
+                  <h3 class="mb-0">Profile Information</h3>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      {% render_field form.first_name class="form-control" %}
+                      <label for="id_first_name" class="">First Name</label>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      {% render_field form.last_name class="form-control"%}
+                      <label for="id_last_name" class="">Last Name</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      {% render_field form.address class="form-control"%}
+                      <label for="id_address" class="">Address</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      {{form.province.label}}
+                      {% render_field form.province class="form-control"%}
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      {{form.city.label}}
+                      {% render_field form.city class="form-control"%}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <div class="md-form md-outline mt-0">
+                      <div class="text-center mb-2">
+                        <button id="btnSubmit" type="submit" class="btn btn-primary mb-4 waves-effect waves-light"
+                          disabled>Submit</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <button class="btn btn-success btn-xs btn-block" type="submit" id="checkoutBtn">Login</button>
-          <br>
-          <br>
-          Already have an account?<a href="{% url 'account_login' %}"type="submit" id="checkoutBtn"> Login</a>
-          <br>
-          <br>
-          {% for field in form  %}
-            {{field.errors}}
-          {% endfor %}
-            
-          
-          
-          
-        </form>
-      </section>
-    </main>   
-  </body>
+            </form>
+
+          </section>
+          <!--Section: Content-->
+        </div>
+        <!--Grid column-->
+      </div>
+      <!--Grid row-->
+    </div>
+  </main>
 
 
 </body>
+<script src="{% static 'js/jquery.validate.min.js' %} "></script>
+<script>
+  $(document).ready(function () {
 
+    $('input').each(function () {
+          if ($(this).val() != "") {
+            var parentId = $(this).attr('id')
+            console.log(parentId)
+            $(`label[for=${parentId}]`).addClass("active")
+          }else {
+           
+          }
+        });
+
+
+    var v = $("#signUpForm").validate({
+      errorElement: 'span',
+    })
+
+
+    $("#nxtBtn").click(function () {
+      if (v.form()) {
+        $(".step-1").hide(300)
+        $(".step-2").show(300)
+        $("#btnSubmit").removeAttr('disabled')
+      } else {
+        
+      }
+    })
+
+  })
+
+</script>
 
 {% endblock %}

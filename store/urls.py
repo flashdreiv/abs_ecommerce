@@ -11,7 +11,7 @@ urlpatterns = [
     path('update_cart/<int:pk>', views.update_cart,name="update-cart"),
     path('process_order', views.process_order,name="process-order"),
     path('orders/', views.track_order,name="track-order"),
-
+    path('sms_verification/<str:type>', views.account_verification,name="sms-verification"),
 
     
 ]

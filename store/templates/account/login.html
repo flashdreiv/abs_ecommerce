@@ -1,7 +1,4 @@
-{% comment %}
-{% extends "account/base.html" %}
-{% endcomment %}
-
+{% extends 'store/base.html' %}
 
 
 {% load i18n %}
@@ -10,44 +7,61 @@
 {% load static %}
 
 {% block content %}
-<link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/login.css' %}" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 
 <body>
   <main>
-    <section class="login_panel">
-      <form class="login" method="POST" action="{% url 'account_login' %}">
-        <h1>{% trans "Log in" %}</h1>
-        {% csrf_token %}
-        <div class="md-form card-body">
-          <input type="text" class="form-control" name="login" placeholder="Username" autocomplete="username"
-            maxlength="150" required="" id="id_login">
-        </div>
-        <div class="md-form">
-          <input type="password" class="form-control" name="password" placeholder="Password"
-            autocomplete="current-password" required="" id="id_password">
-        </div>
-        <div class="row">
-          <button class="btn btn-success btn-xs btn-block" type="submit" id="checkoutBtn">Login</button>
-          {% if redirect_field_value %}
-          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-          {% endif %}
+    <div class="container">
 
-          {% get_providers as socialaccount_providers %}
-          {% if socialaccount_providers %}
-          <a class="btn btn-primary btn-xs " title="Facebook" class="socialaccount_provider facebook"
-            href="/accounts/facebook/login/?process=login"><i class="fab fa-facebook"></i> Login with Facebook
-          </a>
-          <br>
-          <br>
-          <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-          <a href="{{ signup_url }}">Sign up</a>
-          {% endif %}
+      <!--Grid row-->
+      <div class="row d-flex justify-content-center">
+
+        <!--Grid column-->
+        <div class="col-md-6">
+
+          <!--Section: Content-->
+          <section class="mb-5">
+            
+            <div class="d-flex align-items-center h-100 mt-5">
+              <div class="container text-center py-5">
+                <h3 class="mb-0">Sign in</h3>
+              </div>
+            </div>
+            <form class="login" method="POST" action="{% url 'account_login' %}">
+              {% csrf_token %}
+              {{form.errors}}
+              {{form.success}}
+              <div class="md-form md-outline">
+                <input type="text" class="form-control" name="login" autocomplete="username" maxlength="150" required=""
+                  id="id_login">
+                <label data-error="wrong" data-success="right" for="id_login">Mobile Number</label>
+              </div>
+              <div class="md-form md-outline">
+                <input type="password" id="id_password" name="password" class="form-control">
+                <label for="id_password" >Your password</label>
+              </div>
+              <div class="md-form md-outline">
+                <button type="submit" class="btn btn-primary  waves-effect waves-light">Sign in</button>
+                <a class="btn btn-primary btn-xs " title="Facebook" class="socialaccount_provider facebook"
+                  href="/accounts/facebook/login/?process=login"><i class="fab fa-facebook"></i> Login with Facebook
+                </a>
+              </div>
+
+              <div class="md-form md-outline">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <p><a href="">Forgot password?</a></p>
+                </div>
+                <p>Not a member? <a href="{% url 'account_signup' %}">Register</a></p>
+              </div>
+
+            </form>
+          </section>
+
         </div>
-       
-      </form>
-    </section>
+
+      </div>
+
+
+    </div>
   </main>
 </body>
 

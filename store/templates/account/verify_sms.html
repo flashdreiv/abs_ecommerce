@@ -1,0 +1,99 @@
+{% extends 'store/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<body>
+    <main>
+        <div class="container">
+
+            <!--Grid row-->
+            <div class="row d-flex justify-content-center">
+
+                <!--Grid column-->
+                <div class="col-md-6">
+
+                    <!--Section: Content-->
+                    <section class="mb-5">
+
+                        <div class="d-flex align-items-center h-100 mt-5">
+                            <div class="container text-center py-5">
+                                <h3 class="mb-0">SMS verification</h3>
+
+                            </div>
+                        </div>
+
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="md-form md-outline">
+                                        {% render_field form.code|attr:"required" class="form-control" %}
+                                        <label for="id_code" class="">Enter SMS
+                                            verification code</label>
+                                        {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{message}}
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="md-form md-outline mt-0">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="md-outline mt-0">
+                                        <a type="button"id="resend">Resend SMS&nbsp;</a>
+                                        <p id="countdown"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+    // Set the date we're counting down to
+    var countDownDate = new Date().getTime() + (3 * 1000);
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            var resend = document.getElementById("resend")
+            resend.href = "";
+            resend.addEventListener("click",function(){
+                console.log("Hello")
+            })
+
+            document.getElementById("countdown").innerHTML = "";
+
+        }
+    }, 1000);
+</script>
+{% endblock content %}

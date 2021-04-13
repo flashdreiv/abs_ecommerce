@@ -1,14 +1,41 @@
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator
+import random
+from django.core.validators import RegexValidator
 
 # Create your models here.
+
+
+
 class Customer(models.Model):
+    phone_regex = RegexValidator(regex = r'^\+?1?\d{0,9}$',message = "Phone number must be in a pattern of +63")
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    email = models.EmailField()
+    address = models.CharField(max_length=200,null=True,blank=True)
     province = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
+    verified = models.BooleanField(default=False)
+    mobile_number = models.CharField(max_length=12,null=True,blank=True,unique=True,validators=[phone_regex])
+
+class SmsCode(models.Model):
+    customer = models.OneToOneField(Customer,on_delete=models.CASCADE,null=True,blank=True)
+    code = models.CharField(max_length=5,null=True,blank=True)
+
+    def __str__(self):
+        return self.code
+    
+    def save(self,*args,**kwargs):
+        number_list = [x for x in range(10)]
+        code_items = []
+
+        for i in range(5):
+            num = random.choice(number_list)
+            code_items.append(num)
+        
+        code_string = "".join(str(item) for item in code_items)
+        self.code = code_string
+        super().save(*args,**kwargs)
+    
 
 class Product(models.Model):
     cat_list = (
@@ -39,7 +66,7 @@ class Order(models.Model):
         ('5','Cancelled'),
     )
     customer = models.ForeignKey(Customer,on_delete=models.SET_NULL,blank=True,null=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)#
+    date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False,null=True,blank=False)
     transaction_id = models.CharField(max_length=200,null=True,unique=True)
     status = models.CharField(max_length=80,blank=True,null=True,choices=status_list)

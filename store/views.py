@@ -6,9 +6,10 @@ from django.core.paginator import Paginator,EmptyPage
 from django.contrib import messages
 import uuid
 from django.db.models import F
-from . forms import CheckOutForm
+from . forms import CheckOutForm,CodeForm
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from .decorators import unverified_user
 
 # Create your views here.
 # @login_required
@@ -17,12 +18,6 @@ def store(request):
     categories = Product.cat_list
     cartItems = 0
     if request.user.is_authenticated:
-        tmp_user = request.user
-        customer,created = Customer.objects.get_or_create(user=tmp_user)
-        if not customer.name:
-            customer.name = tmp_user.first_name + ' ' + tmp_user.last_name
-            customer.save()
-
         try:
             order = Order.objects.get(customer=customer,complete=False)
             cartItems = order.get_cart_items
@@ -50,6 +45,7 @@ def store(request):
     return render(request,'store/index.html',context)
 
 # @login_required
+# @unverified_user
 def product(request,pk):
     if request.user.is_authenticated:
         customer = request.user.customer
@@ -68,6 +64,7 @@ def product(request,pk):
 
     return render(request,'store/product.html',context)
 @login_required
+# @unverified_user
 def add_to_cart(request,pk):
     if request.user.is_authenticated:
         if request.method=="POST":
@@ -85,6 +82,7 @@ def add_to_cart(request,pk):
 
 
 @login_required
+# @unverified_user
 def cart(request):
     customer = request.user.customer
     try:
@@ -106,6 +104,7 @@ def cart(request):
     return render(request,'store/cart.html',context)
 
 @login_required
+# @unverified_user
 def update_cart(request,pk):   
     if request.method == 'POST':
         customer = request.user.customer
@@ -143,6 +142,7 @@ def update_cart(request,pk):
     
     return JsonResponse([cartItems,qty,cartTotal],safe=False)
 @login_required
+# @unverified_user
 def checkout(request):
     form = CheckOutForm()
     if request.user.is_authenticated:
@@ -169,6 +169,7 @@ def checkout(request):
 
 
 @login_required
+# @unverified_user
 def process_order(request):
     
     if request.method == "POST":
@@ -191,6 +192,7 @@ def process_order(request):
     return redirect('store')
 
 @login_required
+# @unverified_user
 def track_order(request):
     orders = {}
     order = 0
@@ -219,3 +221,33 @@ def track_order(request):
         'pages':page
     }
     return render(request,'store/track_order.html',context)
+
+@login_required
+#add security on bruteforcing numbers
+def account_verification(request,type):
+    customer = request.user.customer
+    smscode = customer.smscode.code
+    form = CodeForm()
+    if request.method == "POST":
+        if(type=="resend"):
+            pass
+        if(type=="new"):
+            form = CodeForm(request.POST)
+            usercode = request.POST.get('code')
+            if form.is_valid():
+                if(str(usercode)==smscode):
+                    customer.verified = True
+                    customer.save()
+                    return redirect('store')
+                else:
+                    messages.error(request,"Invalid code")
+            
+            return redirect('sms-verification') 
+
+    context = {
+        'form':form
+    }
+    return render(request,'account/verify_sms.html',context)
+
+
+
