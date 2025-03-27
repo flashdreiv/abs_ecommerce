@@ -57,13 +57,15 @@ SITE_ID=1
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_SIGNUP_REDIRECT_URL = '/sms_verification/new'
 ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_FORMS = {'signup': 'store.forms.CustomerSignupForm'}
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
